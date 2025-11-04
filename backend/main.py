@@ -92,6 +92,15 @@ Deine Planung ist der erste Schritt einer mehrstufigen AI-Pipeline (Planner → 
 # Tools
 Dir stehen folgende Tools zur Verfügung:
 - Vektor-Datenbanken (Retrieval):
+    - quellen_vector_db: Eine Vektor Datenbank mit Fachbeiträgen und Quellen aus der Quellen-Datenbank
+    - case_law: Eine gesammelte Datenbank mit Urteilen aus Bundesweiten Gerichten
+    - law_vector_db: Eine Vektor Datenbank mit Gesetzen
+    
+- Agents (Operationen):
+    - research_agent: Ein Agent, der tiefgehende juristische Recherche durchführt
+    - writing_agent: ist spezialisiert darauf verschiedene Schreiben zu verfassen
+    - analyst_agent: ist spezialisiert darauf verschiedene Analysen zu erstellen
+    - do_it_all_agent: kann alles.
 
 
 # Guardrails
@@ -226,6 +235,7 @@ async def chat_endpoint(request: PlannerRequest):
     Für einfache Chat-Integration
     """
     return await planner_step(request)
+
 
 
 @app.post("/api/v1/api-call", response_model=APICallResponse)

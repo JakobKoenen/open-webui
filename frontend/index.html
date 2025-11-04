@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Agentic AI Planner - Chat</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+    <script>
+      // Konfiguration für Docker-Setup
+      window.APP_CONFIG = {
+        API_BASE_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+          ? 'http://localhost:8000' 
+          : window.location.origin.replace(':3000', ':8000')
+      };
+    </script>
+  </head>
+  <body>
+    <div id="app">
+      <header class="top-bar">
+        <div class="brand">
+          <span class="brand-badge">Planner</span>
+          <h1>Agentic AI Chat</h1>
+        </div>
+        <div class="status">
+          <span id="health-indicator" class="status-indicator"></span>
+          <span id="health-text">Backend wird geprüft…</span>
+        </div>
+      </header>
+
+      <main class="layout">
+        <aside class="sidebar">
+          <section class="panel">
+            <h2>Konversation</h2>
+            <p class="panel-subtitle">
+              Das Interface speichert den aktuellen Verlauf lokal im Browser.
+            </p>
+            <button id="reset-chat" class="ghost-button">
+              Verlauf zurücksetzen
+            </button>
+          </section>
+
+          <section class="panel">
+            <h3>Backend Informationen</h3>
+            <dl class="meta-list">
+              <div>
+                <dt>Endpoint</dt>
+                <dd id="meta-endpoint">–</dd>
+              </div>
+              <div>
+                <dt>Modell</dt>
+                <dd id="meta-model">–</dd>
+              </div>
+              <div>
+                <dt>Status</dt>
+                <dd id="meta-status">Unbekannt</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="panel">
+            <h3>Nützliche Hinweise</h3>
+            <ul class="hint-list">
+              <li>Nutze konkrete Prompts für strukturierte Pläne.</li>
+              <li>
+                Der Planner erzeugt priorisierte Schritte auf Deutsch gemäß
+                System-Prompt.
+              </li>
+              <li>
+                Du kannst das Backend unter <code>/docs</code> erkunden, wenn FastAPI läuft.
+              </li>
+            </ul>
+          </section>
+        </aside>
+
+        <section class="chat">
+          <div id="message-container" class="chat-feed" aria-live="polite"></div>
+
+          <form id="chat-form" class="composer" autocomplete="off">
+            <textarea
+              id="chat-input"
+              rows="1"
+              placeholder="Nachricht eingeben und mit Shift+Enter neue Zeile hinzufügen…"
+              required
+            ></textarea>
+            <div class="composer-actions">
+              <button type="submit" class="primary" id="send-button">
+                Senden
+              </button>
+            </div>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <template id="message-template">
+      <article class="message">
+        <header class="message-meta">
+          <span class="message-role"></span>
+          <time class="message-time"></time>
+        </header>
+        <div class="message-content"></div>
+      </article>
+    </template>
+
+    <script src="./app.js" type="module"></script>
+  </body>
+</html>
+
