@@ -1,0 +1,54 @@
+services:
+  planner-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: agentic-ai-planner-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - BACKEND_PORT=8000
+      - DEV_MODE=${DEV_MODE:-true}
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT:-}
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY:-}
+      - AZURE_OPENAI_DEPLOYMENT_NAME=${AZURE_OPENAI_DEPLOYMENT_NAME:-gpt-4}
+      - AZURE_OPENAI_API_VERSION=${AZURE_OPENAI_API_VERSION:-2024-02-15-preview}
+    volumes:
+      - ./backend:/app
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - agentic-network
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: agentic-ai-open-webui
+    ports:
+      - "3000:8080"
+    environment:
+      - OPENAI_API_BASE_URL=http://planner-backend:8000/v1
+      - OPENAI_API_KEY=dummy
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - CORS_ALLOW_ORIGIN=*
+      - FORWARDED_ALLOW_IPS=*
+      - DO_NOT_TRACK=true
+      - ANONYMIZED_TELEMETRY=false
+    volumes:
+      - open-webui-data:/app/backend/data
+    depends_on:
+      - planner-backend
+    restart: unless-stopped
+    networks:
+      - agentic-network
+
+networks:
+  agentic-network:
+    driver: bridge
+
+volumes:
+  open-webui-data:
